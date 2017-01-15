@@ -6,7 +6,7 @@ uses
   Usave in 'Usave.pas' {Fsave},
   Uload in 'Uload.pas' {Fload},
   Udifdial in 'Udifdial.pas' {FDifDial},
-  Ulibrary in '..\lib\Ulibrary.pas';
+  Ulib in 'Ulib.pas';
 
 {$R *.res}
 

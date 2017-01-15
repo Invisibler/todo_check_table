@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,Ulibrary;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,Ulib;
 
 type
   TFload = class(TForm)
@@ -22,6 +22,9 @@ type
   private
      function Loadfile(fn:string):rec;
      Procedure savefile(fn1:string);
+     Function EditCreate(x,y,i:integer):TEdit;
+     Function LabelCreate(x,y,i:integer):Tlabel;
+     Function CBCreate(x,y,i:integer):TCheckBox;
     { Private declarations }
   public
     { Public declarations }
@@ -34,6 +37,7 @@ var
   f,f1:textfile;
   acb:array of Tcheckbox;
   aedt:array of TEdit;
+  albl:array of TLabel;
 const asub:string='actived/';
 implementation
 
@@ -67,15 +71,52 @@ begin
 CloseProgram;
 end;
 
-procedure TFload.BtnLoadClick(Sender: TObject);
-var x1,y1,x2,y2,dy,i:integer;
-    cb:Tcheckbox;
-    oldf:boolean;
-    fn1,Scbb:string;
+Function TFload.EditCreate(x,y,i:integer):TEdit;
+Const Edt_WIDTH=100;
+      Edt_HEIGHT=20;
+begin
+  result:=TEdit.Create(self);
+  result.Left:=x;
+  result.Top:=y;
+  result.Width:=EDT_WIDTH;
+  result.Height:=EDT_HEIGHT;
+  result.text:=r.a2[i];
+  result.Parent:=self;
+end;
+
+Function TFload.LabelCreate(x,y,i:integer):Tlabel;
+Const LBL_WIDTH=100;
+      LBL_HEIGHT=20;
+begin
+    result:=TLabel.Create(self);
+    result.Left:=x;
+    result.Top:=y;
+    result.Width:=LBL_WIDTH;
+    result.Height:=LBL_HEIGHT;
+    result.Caption:=r.a2[i];
+    result.Parent:=self;
+end;
+
+Function TFload.CBCreate(x,y,i:integer):TCheckBox;
 Const CB_WIDTH=100;
       CB_HEIGHT=20;
 begin
-x1:=10;y1:=40;x2:=200;y2:=100;dy:=20;
+    result:=Tcheckbox.Create(self);
+    result.Left:=x;
+    result.Top:=y;
+    result.Width:=CB_WIDTH;
+    result.Height:=CB_HEIGHT;
+    result.Caption:=r.a1[i];
+    result.Parent:=self;
+end;
+
+procedure TFload.BtnLoadClick(Sender: TObject);
+var x1,y1,x2,y2,x3,y3,dy,i:integer;
+    cb:Tcheckbox;
+    oldf:boolean;
+    fn1,Scbb:string;
+begin
+x1:=10;y1:=40;x2:=200;y2:=y1+5;dy:=20;x3:=150;y3:=y1+5;
 oldf:=false;
 if OpenDialog1.Execute() then
   begin
@@ -94,27 +135,18 @@ if OpenDialog1.Execute() then
   end;
 setlength(acb,r.n);
 setlength(aedt,r.m);
+setlength(albl,r.m);
 for I := 0 to r.n-1 do
   begin
-    acb[i]:=Tcheckbox.Create(self);
-    acb[i].Left:=x1;
-    acb[i].Top:=y1;
-    acb[i].Width:=CB_WIDTH;
-    acb[i].Height:=CB_HEIGHT;
-    acb[i].Caption:=r.a1[i];
-    acb[i].Parent:=self;
+    acb[i]:=CBCreate(x1,y1,i);
     y1:=y1+dy;
   end;
 for I := 0 to r.m-1 do
   begin
-    aedt[i]:=TEdit.Create(self);
-    aedt[i].Left:=x2;
-    aedt[i].Top:=y2;
-    aedt[i].Width:=CB_WIDTH;
-    aedt[i].Height:=CB_HEIGHT;
-    aedt[i].text:=r.a2[i];
-    aedt[i].Parent:=self;
+    aedt[i]:=EditCreate(x2,y2,i);
+    albl[i]:=LabelCreate(x3,y3,i);
     y2:=y2+dy;
+    y3:=y2;
   end;
 if oldf then
   begin
@@ -170,3 +202,4 @@ else
 end;
 
 end.
+

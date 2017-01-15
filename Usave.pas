@@ -29,7 +29,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
   private
-  Procedure Savefile(fn:string);
+  Procedure s_Savefile(fn:string);
+  Procedure s_loadfile(fn:string);
     { Private declarations }
   public
   b1,b2,bs:boolean;
@@ -43,9 +44,9 @@ var
 implementation
 
 {$R *.dfm}
-uses Udifdial,Ulibrary;
+uses Udifdial,Ulib;
 
-Procedure TFSave.Savefile(fn:string);
+Procedure TFSave.s_Savefile(fn:string);
 var i:integer;
 begin
 bs:=true;
@@ -81,6 +82,34 @@ if bs then
   end;
 end;
 
+Procedure TFSave.s_Loadfile(fn:string);
+Var i,j,k:integer;
+    s:string;
+begin
+  memo1.Lines.Clear;
+  memo2.Lines.Clear;
+  assignfile(f,fn);
+  reset(f);
+  readln(f,j);
+  EdtCb.Text:=inttostr(j);
+  readln(f,k);
+  EdtVar.Text:=inttostr(k);
+  readln(f,s);
+  if strtobool(s) then Checkbox1.Checked:=true
+    else  Checkbox1.Checked:=false;
+  for I := 1 to J do
+    begin
+      readln(f,s);
+      Memo1.Lines.Add(s);
+    end;
+  for I := 1 to k do
+    begin
+      readln(f,s);
+      Memo2.Lines.Add(s);
+    end;
+  closefile(f);
+end;
+
 procedure TFsave.BtnCloseClick(Sender: TObject);
 begin
 CloseProgram;
@@ -92,6 +121,7 @@ if OpenDialog1.Execute() then
   begin
     fn:=OpenDialog1.FileName;
     BtnSave.Enabled:=true;
+    s_loadfile(fn);
   end;
 end;
 
@@ -105,14 +135,14 @@ begin
 if SaveDialog1.Execute() then
   begin
     fn:=SaveDialog1.FileName;
-    Savefile(fn);
+    s_Savefile(fn);
     smsave(fn);
   end;
 end;
 
 procedure TFsave.BtnSaveClick(Sender: TObject);
 begin
-savefile(fn);
+s_savefile(fn);
 smsave(fn);
 end;
 
